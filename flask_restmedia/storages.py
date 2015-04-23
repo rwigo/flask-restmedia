@@ -59,16 +59,17 @@ class FileStorage(RestMediaStorage):
 
     def create(self, path, filename=None, file=None):
 
-        if filename and file:
-            filepath = os.path.join(self.root_path, path, filename)
+        filepath = os.path.join(self.root_path, path, filename)
 
-            if os.path.exists(filepath):
-                return None
+        if os.path.exists(filepath):
+            return None
 
+        if file:
             file.save(filepath)
-            return True
+        else:
+            os.mkdir(filepath)
 
-        return None
+        return True
 
     def read(self, path):
 

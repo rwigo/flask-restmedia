@@ -30,12 +30,13 @@ class RestMediaApi(MethodView):
         return r
 
     def post(self, path_arg=''):
+        data = request.get_json()
         path = self._secure_path(path_arg)
 
-        filename = request.args.get('filename')
 
-        if filename:
+        if data:
             file = None
+            filename = data.get('filename')
         else:
             file = request.files['file']
             filename = secure_filename(file.filename)
