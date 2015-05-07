@@ -1,6 +1,7 @@
 """
     Flask-RestMedia
 """
+import json
 
 from flask import abort, request
 from flask.views import MethodView
@@ -22,7 +23,7 @@ class RestMediaApi(MethodView):
         if not self.restmedia.right_callback('read', path):
             abort(403)
 
-        r = self.storage.read(path)
+        r = self.storage.read(path, self.restmedia.list_dir_callback)
 
         if not r:
             abort(404)
@@ -72,6 +73,17 @@ def default_has_right(action, path, filename=None, file=None):
     """
     return True
 
+def default_list_dir(path, folders, files):
+    """
+        Default callback function for formating directory listing
+
+        :param path: current path
+        :param folders: list of sub-folders
+        :param files: list of files
+
+        Return the list of name json encoded
+    """
+    return json.dumps(folders + files)
 
 class RestMedia():
     """
@@ -85,6 +97,8 @@ class RestMedia():
 
         :param app: the Flask application object
         :param media_url: Route used, default to /media/
+        :param list_dir_callback: Callback used to format directory listing
+            :func:`default_list_dir`
         :param right_callback: Callback used to validate right, default to
             :func:`default_has_right`
         :param storage: Storage backend : :class:`FileStorage`,
@@ -92,10 +106,12 @@ class RestMedia():
             implementing :class:`RestMediaStorage`
     """
     def __init__(self, app=None, media_url='/media/',
+                 list_dir_callback=default_list_dir,
                  right_callback=default_has_right, storage=None):
 
         self.app = app
         self.url = media_url
+        self.list_dir_callback = list_dir_callback
         self.right_callback = right_callback
         self.storage = storage
 

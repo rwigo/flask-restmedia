@@ -71,21 +71,21 @@ class FileStorage(RestMediaStorage):
 
         return True
 
-    def read(self, path):
+    def read(self, path, dir_list_callback):
 
         path = os.path.join(self.root_path, path)
 
         if os.path.isdir(path):
-            elems = []
+            folders = files = []
             listdir = os.listdir(path)
 
             for l in listdir:
                 if os.path.isdir(os.path.join(path, l)):
-                    elems.append({'name': l, 'type': 'folder'})
+                    folders.append(l)
                 else:
-                    elems.append({'name': l, 'type': 'file'})
+                    files.append(l)
 
-            return json.dumps(elems)
+            return dir_list_callback(path, folders, files)
 
         elif os.path.isfile(path):
             return send_file(path)
