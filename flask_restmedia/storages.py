@@ -76,7 +76,8 @@ class FileStorage(RestMediaStorage):
         path = os.path.join(self.root_path, path)
 
         if os.path.isdir(path):
-            folders = files = []
+            folders = []
+            files = []
             listdir = os.listdir(path)
 
             for l in listdir:
