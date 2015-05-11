@@ -72,7 +72,7 @@ class FileStorage(RestMediaStorage):
         return True
 
     def read(self, path, dir_list_callback):
-
+        relative = path
         path = os.path.join(self.root_path, path)
 
         if os.path.isdir(path):
@@ -86,7 +86,7 @@ class FileStorage(RestMediaStorage):
                 else:
                     files.append(l)
 
-            return dir_list_callback(path, folders, files)
+            return dir_list_callback(relative, folders, files)
 
         elif os.path.isfile(path):
             return send_file(path)
