@@ -61,7 +61,8 @@ class FileStorage(RestMediaStorage):
 
         filepath = os.path.join(self.root_path, path, filename)
 
-        if os.path.exists(filepath):
+        if os.path.isdir(filepath) or \
+                (not file and os.path.exists(filepath)):
             return None
 
         if file:
