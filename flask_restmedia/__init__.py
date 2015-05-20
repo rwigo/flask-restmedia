@@ -31,16 +31,14 @@ class RestMediaApi(MethodView):
         return r
 
     def post(self, path_arg=''):
-        data = request.get_json()
+
+        filename = request.form.get('filename')
+        if not filename:
+            abort(400)
+
         path = self._secure_path(path_arg)
-
-
-        if data:
-            file = None
-            filename = data.get('filename')
-        else:
-            file = request.files['file']
-            filename = secure_filename(file.filename)
+        file = request.files['file']
+        filename = secure_filename(filename)
 
         if not self.restmedia.right_callback('create', path, filename, file):
             abort(403)
