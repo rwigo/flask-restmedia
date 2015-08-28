@@ -37,7 +37,7 @@ class RestMediaApi(MethodView):
             abort(400)
 
         path = self._secure_path(path_arg)
-        file = request.files['file']
+        file = request.files.get('file')
         filename = secure_filename(filename)
 
         if not self.restmedia.right_callback('create', path, filename, file):
